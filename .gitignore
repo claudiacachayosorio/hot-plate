@@ -1,0 +1,53 @@
+# BATS Framework Caches & Test Reports
+.bats-cache/
+bats/
+report/
+coverage/
+*.xml
+*.html
+
+# Runtime Artifacts, Logs & Temp Files
+*.log
+*.out
+*.err
+log/
+logs/
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Environment & Secrets (Local Dev Overrides)
+.env
+.env.local
+.env.*.local
+*.secret
+*.pem
+*.key
+
+# Operating System Files
+Thumbs.db
+Ehthumbs.db
+Desktop.ini
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs and Text Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Personal Notes & Local TODOs
+TODO
+TODO.txt
+TODO.md
+NOTES
+NOTES.txt
+NOTES.md
+scratchpad/
+*.notes
