@@ -1,6 +1,5 @@
 # BATS Framework Caches & Test Reports
 .bats-cache/
-bats/
 report/
 coverage/
 *.xml
