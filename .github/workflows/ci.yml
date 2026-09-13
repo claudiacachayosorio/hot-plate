@@ -1,4 +1,7 @@
 name: CI
+run-name: >
+  CI for {{ github.head_ref || github.ref_name }} ({{ github.event.name }})
+
 on:
   workflow_dispatch:
   push:
@@ -7,7 +10,7 @@ on:
     branches: [main]
 
 jobs:
-  validate:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
