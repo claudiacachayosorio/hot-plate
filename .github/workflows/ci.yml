@@ -1,6 +1,6 @@
 name: CI
 run-name: >
-  CI for {{ github.head_ref || github.ref_name }} ({{ github.event.name }})
+  CI for ${{ github.head_ref || github.ref_name }} (${{ github.event.name }})
 
 on:
   workflow_dispatch:
