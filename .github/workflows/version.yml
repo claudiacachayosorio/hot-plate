@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Determine version change
+      - name: Determine semantic version
         id: semver
         uses: paulhatch/semantic-version@v6
         with:
@@ -26,20 +26,12 @@ jobs:
           minor_pattern: "feat:"
           version_format: "${major}.${minor}.${patch}"
 
-      - name: Update & push version
+      - name: Create Git tag
         if: steps.semver.outputs.is_tagged == "false"
         env:
-          VER: ${{ steps.semver.outputs.version }}
           TAG: ${{ steps.semver.outputs.version_tag }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          printf "%s" "$VER" > VERSION
-          git add VERSION
-
-          if ! git diff --quiet --cached; then
-            git commit -m "chore(release): bump ${TAG} [skip ci]"
-            git tag -a "$TAG" -m "Release ${TAG}"
-            git push origin HEAD:main --follow-tags
-          fi
+          git tag -a "$TAG" -m "Release ${TAG}"
+          git push origin "$TAG"
