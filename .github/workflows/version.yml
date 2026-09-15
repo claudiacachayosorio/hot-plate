@@ -2,16 +2,20 @@ name: Version
 run-name: Version bump for "${{ github.event.head_commit.message }}"
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
-
-permissions:
-  contents: write
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: "Commit message for PR squash merge"
+        required: true
 
 jobs:
-  release:
+  main:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
