@@ -1,7 +1,5 @@
 name: Lint PR
-run-name: >
-  Lint PR "${{ github.event.pull_request.title }}"
-  from ${{ github.head_ref }} (${{ github.event.action }})
+run-name: Lint PR from {{ github.head_ref }} ({{ github.event.action }})
 
 on:
   pull_request:
@@ -9,7 +7,6 @@ on:
       - opened
       - reopened
       - edited
-      - synchronize
 
 jobs:
   main:
@@ -17,7 +14,7 @@ jobs:
     permissions:
       pull_requests: read
     steps:
-      - name: Validate PR title
+      - name: Run semantic-pull-request
         uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
