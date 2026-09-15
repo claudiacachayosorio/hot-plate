@@ -4,48 +4,52 @@
 # =========================================================================== #
 set -euo pipefail
 
-CUR_TAG="$(git describe --tags --abbrev=0 2>/dev/null || printf "0.0.0")"
-CUR_VER="${CUR_TAG#v}"
+cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "0.0.0")"
+cur_ver="${cur_tag#v}"
 
-MAJOR=0
-MINOR=0
-PATCH=0
+major=0
+minor=0
+patch=0
+rev_range="HEAD"
 
-REV_RANGE="HEAD"
-
-if [[ "$CUR_TAG" != "0.0.0" ]]; then
-	IFS='.' read -r MAJOR MINOR PATCH <<< "$CUR_VER"
-	REV_RANGE="${CUR_TAG}..HEAD"
+if [[ "$cur_tag" != "0.0.0" ]]; then
+	IFS='.' read -r major minor patch <<< "$cur_ver"
+	rev_range="${cur_tag}..HEAD"
 fi
 
-SCOPE_REGEXP="(\([a-z0-9-]+\))?"
-GIT_LOG_FLAGS=(--format="%H" --extended-regexp)
+scope_regexp="(\([a-z0-9-]+\))?"
 
 has_commit_matching() {
-	local prefix="$1"
-	local regexp="^${prefix//@/$SCOPE_REGEXP}:"
-	local git_log_flags=("${GIT_LOG_FLAGS[@]}" --grep="$regexp")
+	local _prefix="$1"
+	local _regexp="^${_prefix//@/$scope_regexp}:"
+	local _flags=(
+		--format="%H"
+		--extended-regexp
+		--grep="$_regexp"
+	)
 
-	local match=""
-	match="$(git log "${git_log_flags[@]}" "$REV_RANGE")"
-	[[ -n "$match" ]]
+	local _match=""
+	_match="$(git log "${_flags[@]}" "$rev_range")"
+	[[ -n "$_match" ]]
 }
 
 if has_commit_matching "[a-z]+@!"; then
-	MAJOR=$((MAJOR+1))
-	MINOR=0
-	PATCH=0
+	major=$((major+1))
+	minor=0
+	patch=0
 elif has_commit_matching "feat@"; then
-	MINOR=$((MINOR+1))
-	PATCH=0
+	minor=$((minor+1))
+	patch=0
 elif has_commit_matching "fix@"; then
-	PATCH=$((PATCH+1))
+	patch=$((patch+1))
 else
 	exit 0
 fi
 
-NEW_VER="${MAJOR}.${MINOR}.${PATCH}"
-NEW_TAG="v${NEW_VER}"
+new_ver="${major}.${minor}.${patch}"
+new_tag="v${new_ver}"
 
-git tag --annotate "$NEW_TAG" --message "Release ${NEW_TAG}"
-git push origin "$NEW_TAG"
+git tag \
+	--annotate "$new_tag" \
+	--message "Release ${new_tag}"
+git push origin "$new_tag"
