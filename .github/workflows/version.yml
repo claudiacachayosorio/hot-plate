@@ -1,0 +1,26 @@
+name: Version
+run-name: Version bump for "${{ github.event.head_commit.message }}"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Update version
+        env:
+          SCRIPT: "./.github/scripts/version.sh"
+          COMMIT: ${{ github.event.head_commit.message }}
+        run: |
+          chmod +x "$SCRIPT"
+          "$SCRIPT" "$COMMIT"

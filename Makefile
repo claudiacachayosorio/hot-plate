@@ -16,7 +16,9 @@ test_scripts := $(bats_scripts) $(test_dir)/test_helper.bash
 
 lib_scripts  := $(wildcard $(lib_dir)/*.sh)
 app_scripts  := $(bin_file) $(src_file) $(lib_scripts)
-bash_scripts := $(app_scripts) $(test_scripts)
+
+ci_scripts   := $(wildcard .github/scripts/*.sh)
+bash_scripts := $(app_scripts) $(test_scripts) $(ci_scripts)
 
 SHELLCHECK   ?= shellcheck
 BATS          = $(test_dir)/bats/bin/bats
