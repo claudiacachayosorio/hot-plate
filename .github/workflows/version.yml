@@ -1,4 +1,5 @@
 name: Version
+run-name: Version Bump for ${{ github.event.head_commit.message }}
 
 on:
   workflow_dispatch:
@@ -18,11 +19,8 @@ jobs:
           fetch-depth: 0
 
       - name: Update version
-        env:
-          SCRIPT: ".github/scripts/version.sh"
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          chmod +x "$SCRIPT"
-          "$SCRIPT"
+          chmod +x ./.github/scripts/version.sh
+          ./.github/scripts/version.sh
