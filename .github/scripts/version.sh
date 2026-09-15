@@ -35,11 +35,13 @@ if [[ "$cur_tag" != "0.0.0" ]]; then
 	IFS='.' read -r major minor patch <<< "$cur_ver"
 fi
 
+exit_msg="Commit type '${commit_type}' does not require a version bump."
+
 case "$commit_type" in
 	*!)   major=$((major+1)) ; minor=0 ; patch=0 ;;
 	feat) minor=$((minor+1)) ; patch=0 ;;
 	fix)  patch=$((patch+1)) ;;
-	*)    exit 0
+	*)    printf "%s\n" "$exit_msg" ; exit 0 ;;
 esac
 
 new_ver="${major}.${minor}.${patch}"
