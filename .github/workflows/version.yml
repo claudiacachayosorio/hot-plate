@@ -4,7 +4,7 @@ run-name: Version Bump for "${{ github.event.head_commit.message }}"
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, ci/semver]
 
 permissions:
   contents: write
