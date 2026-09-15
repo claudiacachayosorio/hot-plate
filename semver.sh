@@ -18,19 +18,31 @@ if [[ "$CUR_TAG" != "0.0.0" ]]; then
 	REV_RANGE="${CUR_TAG}..HEAD"
 fi
 
-find_bump() {
+SCOPE_REGEXP="(\([a-z0-9-]+\))?"
+GIT_LOG_FLAGS=(
+	--max-count=1
+	--format="%H"
+	--extended-regexp
+)
+
+has_commit_matching() {
 	local prefix="$1"
-	git log --grep="^${prefix}:" --max-count=1 --pretty="%B" "$REV_RANGE"
+	local regexp="^${prefix//@/$SCOPE_REGEXP}:"
+	local git_log_flags=("${GIT_LOG_FLAGS[@]}" --grep="$regexp")
+
+	local match=""
+	match="$(git log "${git_log_flags[@]}" "$REV_RANGE")"
+	[[ -n "$match" ]]
 }
 
-if find_bump "[a-z]+!"; then
+if has_commit_matching "[a-z]+@!"; then
 	MAJOR=$((MAJOR+1))
 	MINOR=0
 	PATCH=0
-elif find_bump "feat"; then
+elif has_commit_matching "feat@"; then
 	MINOR=$((MINOR+1))
 	PATCH=0
-elif find_bump "fix"; then
+elif has_commit_matching "fix@"; then
 	PATCH=$((PATCH+1))
 else
 	exit 0
