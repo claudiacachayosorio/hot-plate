@@ -20,6 +20,7 @@ jobs:
       - name: Update version
         env:
           SCRIPT: "./.github/scripts/version.sh"
+          COMMIT: ${{ github.event.head_commit.message }}
         run: |
           chmod +x "$SCRIPT"
-          "$SCRIPT" "${{ github.event.head_commit.message }}"
+          "$SCRIPT" "$COMMIT"
