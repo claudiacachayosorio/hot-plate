@@ -1,13 +1,16 @@
 name: CI
-run-name: CI pipeline for ${{ github.head_ref }}
+run-name: >
+  CI for ${{ github.head_ref || github.ref_name }} (${{ github.event_name }})
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  validate:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
