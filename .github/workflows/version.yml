@@ -1,10 +1,10 @@
 name: Version
-run-name: Version Bump for "${{ github.event.head_commit.message }}"
+run-name: Version bump for "${{ github.event.head_commit.message }}"
 
 on:
   workflow_dispatch:
   push:
-    branches: [main, ci/semver]
+    branches: [main]
 
 permissions:
   contents: write

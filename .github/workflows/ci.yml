@@ -1,5 +1,5 @@
 name: CI
-run-name: CI Pipeline for ${{ github.head_ref }}
+run-name: CI pipeline for ${{ github.head_ref }}
 
 on:
   workflow_dispatch:
