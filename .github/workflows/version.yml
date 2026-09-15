@@ -1,12 +1,14 @@
 name: Version
-run-name: Version bump for "${{ github.event.head_commit.message }}"
+run-name: >-
+  Bump: ${{ github.event.head_commit.message || inputs.commit }}
+  (${{ github.event_name }} on ${{ github.ref_name }})
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
-      pr:
+      commit:
         description: "Commit message for PR squash merge"
         required: true
 
