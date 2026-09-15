@@ -19,11 +19,7 @@ if [[ "$CUR_TAG" != "0.0.0" ]]; then
 fi
 
 SCOPE_REGEXP="(\([a-z0-9-]+\))?"
-GIT_LOG_FLAGS=(
-	--max-count=1
-	--format="%H"
-	--extended-regexp
-)
+GIT_LOG_FLAGS=(--format="%H" --extended-regexp)
 
 has_commit_matching() {
 	local prefix="$1"
@@ -51,5 +47,5 @@ fi
 NEW_VER="${MAJOR}.${MINOR}.${PATCH}"
 NEW_TAG="v${NEW_VER}"
 
-git tag -a "$NEW_TAG" -m "Release ${NEW_TAG}"
+git tag --annotate "$NEW_TAG" --message "Release ${NEW_TAG}"
 git push origin "$NEW_TAG"
