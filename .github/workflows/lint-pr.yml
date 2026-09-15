@@ -1,0 +1,25 @@
+name: Lint PR
+run-name: >
+  Lint PR "${{ github.event.pull_request.title }}"
+  from ${{ github.head_ref }} (${{ github.event.action }})
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    permissions:
+      pull_requests: read
+    steps:
+      - name: Validate PR title
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          requireScope: false
