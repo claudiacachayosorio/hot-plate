@@ -11,12 +11,14 @@ die() {
 
 commit_msg="$(<"$1")"
 
-scope_regexp="^\([[:alnum:]-]+\):"
-msg_regexp="${scope_regexp} .+$"
+prefix_regexp="^b\([[:alnum:]-]+\):"
+msg_regexp="${prefix_regexp} .+$"
 
 if [[ -z "$commit_msg" ]]; then
 	die "empty commit message"
-elif [[ ! "$commit_msg" =~ $scope_regexp ]]; then
+elif [[ "$commit_msg" != b* ]]; then
+	die "missing branch signifier"
+elif [[ ! "$commit_msg" =~ $prefix_regexp ]]; then
 	die "missing or invalid commit scope"
 elif [[ ! "$commit_msg" =~ $msg_regexp ]]; then
 	die "missing commit description"
