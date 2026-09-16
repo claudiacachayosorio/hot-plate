@@ -5,9 +5,9 @@ run-name: >-
   (${{ github.event.action || github.event_name }})"
 
 on:
-  workflow_dispatch:
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
