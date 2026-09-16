@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# =========================================================================== #
+# Description: Pre-commit hook for hot-plate.
+# =========================================================================== #
+
+if ! make lint; then
+	printf "Commit aborted: 'make lint' failed.\n"
+	exit 1
+fi
