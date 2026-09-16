@@ -9,4 +9,4 @@ die() {
 	exit 1
 }
 
-! make lint && die "'make lint' failed."
+make lint || die "'make lint' failed."
