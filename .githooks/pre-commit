@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 # =========================================================================== #
-# Description: Pre-commit hook for hot-plate.
+# Description: Pre-commit syntax check.
 # =========================================================================== #
 
-die() {
-	local msg="$1"
-	printf "Commit aborted: %s\n" "$msg" >&2
+if ! make lint; then
+	printf "Commit aborted: 'make lint' failed.\n" >&2
 	exit 1
-}
-
-make lint || die "'make lint' failed."
+fi
