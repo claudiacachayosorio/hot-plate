@@ -11,7 +11,7 @@ die() {
 
 commit_msg="$(<"$1")"
 
-scope_regex="^[[:alnum:]-]+:"
+scope_regex="^\([[:alnum:]-]+\):"
 msg_regexp="${scope_regex} .+$"
 
 if [[ -z "$commit_msg" ]]; then
