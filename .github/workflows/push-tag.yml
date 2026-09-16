@@ -1,5 +1,6 @@
-name: Version
-run-name: Version bump for "${{ github.event.head_commit.message }}"
+name: Push - Version Tag
+run-name: >-
+  "Push tag to ${{ github.event.repository.name }}/${{ github.ref_name }}"
 
 on:
   push:
@@ -19,7 +20,7 @@ jobs:
 
       - name: Update version
         env:
-          SCRIPT: "./.github/scripts/version.sh"
+          SCRIPT: "./.github/scripts/push-tag.sh"
           COMMIT: ${{ github.event.head_commit.message }}
         run: |
           chmod +x "$SCRIPT"
