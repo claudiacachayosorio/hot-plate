@@ -3,16 +3,23 @@
 # Description: Commit message hook to validate format.
 # =========================================================================== #
 
+printf "Validating message format...\n"
+
+die() {
+	local error_desc="$1"
+	printf "Aborting commit due to %s.\n" "$error_desc" >&2
+	exit 1
+}
+
 commit_msg="$(<"$1")"
+
 scope_regexp="^\([[:alnum:]-]+\):"
 msg_regexp="${scope_regexp} .+$"
 
-printf "Checking commit message format...\n"
-
-if [[ ! "$commit_msg" =~ $scope_regexp ]]; then
-	printf "  Missing or invalid scope. Commit aborted.\n" >&2
-	exit 1
+if [[ -z "$commit_msg" ]]; then
+	die "empty commit message"
+elif [[ ! "$commit_msg" =~ $scope_regexp ]]; then
+	die "missing or invalid commit scope"
 elif [[ ! "$commit_msg" =~ $msg_regexp ]]; then
-	printf "  Missing commit description. Commit aborted. \n" >&2
-	exit 1
+	die "missing commit description"
 fi
