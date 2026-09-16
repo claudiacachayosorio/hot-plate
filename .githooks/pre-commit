@@ -7,3 +7,5 @@ if ! make lint; then
 	printf "'make lint' failed. Aborting commit.\n" >&2
 	exit 1
 fi
+
+printf "\n"
