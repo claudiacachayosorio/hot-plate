@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =========================================================================== #
-# Description: Automate semantic versioning.
+# Description: Generate and push version tag.
 # =========================================================================== #
 
 set -euo pipefail

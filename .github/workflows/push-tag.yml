@@ -1,5 +1,6 @@
-name: Main - Auto Tag Version
-run-name: Version tag for commit ${{ github.event.head_commit.id }}
+name: Push - Version Tag
+run-name: >-
+  "Push tag to ${{ github.event.repository.name }}/${{ github.ref_name }}"
 
 on:
   push:
