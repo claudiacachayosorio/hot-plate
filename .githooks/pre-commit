@@ -4,6 +4,6 @@
 # =========================================================================== #
 
 if ! make lint; then
-	printf "Commit aborted: 'make lint' failed.\n" >&2
+	printf "'make lint' failed. Aborting commit.\n" >&2
 	exit 1
 fi

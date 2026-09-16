@@ -3,8 +3,6 @@
 # Description: Commit message hook to validate format.
 # =========================================================================== #
 
-printf "Validating message format...\n"
-
 die() {
 	local error_desc="$1"
 	printf "Aborting commit due to %s.\n" "$error_desc" >&2
