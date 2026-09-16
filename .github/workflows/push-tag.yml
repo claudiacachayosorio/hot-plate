@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  main:
+  push-tag:
     runs-on: ubuntu-latest
     permissions:
       contents: write
