@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 # =========================================================================== #
-# Description: Commit message validator.
+# Description: Commit message hook to validate format.
 # =========================================================================== #
 
 commit_msg="$(<"$1")"
-msg_pattern="^\([[:alnum:]-]+\): .+$"
+scope_regexp="^\([[:alnum:]-]+\):"
+msg_regexp="${scope_regexp} .+$"
 
-if [[ ! "$commit_msg" =~ $msg_pattern ]]; then
-	printf "Commit aborted: missing or invalid scope.\n" >&2
+printf "Checking commit message format...\n"
+
+if [[ ! "$commit_msg" =~ $scope_regexp ]]; then
+	printf "  Missing or invalid scope. Commit aborted.\n" >&2
+	exit 1
+elif [[ ! "$commit_msg" =~ $msg_regexp ]]; then
+	printf "  Missing commit description. Commit aborted. \n" >&2
 	exit 1
 fi
