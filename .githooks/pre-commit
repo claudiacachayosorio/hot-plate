@@ -3,7 +3,10 @@
 # Description: Pre-commit hook for hot-plate.
 # =========================================================================== #
 
-if ! make lint; then
-	printf "Commit aborted: 'make lint' failed.\n"
+die() {
+	local msg="$1"
+	printf "Commit aborted: %s\n" "$msg" >&2
 	exit 1
-fi
+}
+
+! make lint && die "'make lint' failed."
