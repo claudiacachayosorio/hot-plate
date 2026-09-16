@@ -36,7 +36,7 @@ help:
 
 lint:
 	@printf "Linting scripts with ShellCheck...\n"
-	@$(SHELLCHECK) --severity=error --format=gcc $(bash_scripts)
+	@$(SHELLCHECK) --severity=error --format=gcc $(BASH_SCRIPTS)
 
 test:
 	@printf "Verifying test dependencies...\n"

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # =========================================================================== #
-# Description: Pre-commit syntax check.
+# Description: Pre-commit linting.
 # =========================================================================== #
-set-x
+
 bash_scripts="$(
 	git diff --staged --name-only --diff-filter=ACMR \
 	-- '*.sh' 'bin/**' '.githooks/**'
@@ -11,4 +11,3 @@ bash_scripts="$(
 if [[ -n "${bash_scripts//[[:space:]]/}" ]]; then
 	make lint BASH_SCRIPTS="$bash_scripts"
 fi
-set +x
