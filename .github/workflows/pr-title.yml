@@ -1,7 +1,7 @@
 name: PR - Validate Title
 run-name: >-
-  "Validate title for PR #${{ github.event.pull_request.number }} |
-  ${{ github.head_ref }} (${{ github.event.action }})"
+  "Validate title for PR #${{ github.event.pull_request.number }}
+  from ${{ github.head_ref }} (${{ github.event.action }})"
 
 on:
   pull_request:

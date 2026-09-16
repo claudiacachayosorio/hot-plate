@@ -1,12 +1,11 @@
 name: PR - CI Pipeline
 run-name: >-
-  "CI for PR #${{ github.event.pull_request.number }} |
-  ${{ github.head_ref }} (${{ github.event.action }})"
+  "CI for PR #${{ github.event.pull_request.number || '?' }}
+  from ${{ github.head_ref || github.ref_name }}
+  (${{ github.event.action || github.event_name }})"
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
