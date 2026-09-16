@@ -1,5 +1,7 @@
-name: Lint PR
-run-name: Lint PR from ${{ github.head_ref }} (${{ github.event.action }})
+name: PR - Validate Title
+run-name: >-
+  "Validate title for PR #${{ github.event.pull_request.number }} |
+  ${{ github.head_ref }} (${{ github.event.action }})"
 
 on:
   pull_request:

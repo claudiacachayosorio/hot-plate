@@ -1,6 +1,7 @@
-name: CI
-run-name: >
-  CI for ${{ github.head_ref || github.ref_name }} (${{ github.event_name }})
+name: PR - CI Pipeline
+run-name: >-
+  "CI for PR #${{ github.event.pull_request.number }} |
+  ${{ github.head_ref }} (${{ github.event.action }})"
 
 on:
   workflow_dispatch:
@@ -16,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Run Shellcheck
+      - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
         with:
           severity: error
