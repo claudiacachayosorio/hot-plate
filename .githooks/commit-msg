@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# =========================================================================== #
+# Description: Commit message validator.
+# =========================================================================== #
+
+commit_msg="$(<"$1")"
+msg_pattern="^\([[:alnum:]-]+\): .+$"
+
+if [[ ! "$commit_msg" =~ $msg_pattern ]]; then
+	printf "Commit aborted: missing or invalid scope.\n" >&2
+	exit 1
+fi
