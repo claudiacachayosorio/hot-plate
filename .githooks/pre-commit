@@ -2,8 +2,13 @@
 # =========================================================================== #
 # Description: Pre-commit syntax check.
 # =========================================================================== #
+set-x
+bash_scripts="$(
+	git diff --staged --name-only --diff-filter=ACMR \
+	-- '*.sh' 'bin/**' '.githooks/**'
+)"
 
-if ! make lint; then
-	printf "'make lint' failed. Aborting commit.\n" >&2
-	exit 1
+if [[ -n "${bash_scripts//[[:space:]]/}" ]]; then
+	make lint BASH_SCRIPTS="$bash_scripts"
 fi
+set +x
