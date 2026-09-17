@@ -8,6 +8,6 @@ bash_scripts="$(
     -- '*.sh' 'bin/**' '.githooks/**'
 )"
 
-if [[ -n "${bash_scripts//[[:space:]]/}" ]]; then
-  make lint
+if [[ -n "$bash_scripts" ]]; then
+  make lint BASH_SCRIPTS="$bash_scripts"
 fi
