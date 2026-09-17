@@ -4,11 +4,11 @@
 # =========================================================================== #
 set -euo pipefail
 
-bash_scripts="$(
+shell_files="$(
   git diff --staged --name-only --diff-filter=ACMR \
     -- '*.sh' 'bin/**' '.githooks/**'
 )"
 
-if [[ -n "$bash_scripts" ]]; then
-  make lint BASH_SCRIPTS="${bash_scripts//$'\n'/ }"
+if [[ -n "$shell_files" ]]; then
+  make lint SHELL_FILES="${shell_files//$'\n'/ }"
 fi
