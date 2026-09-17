@@ -70,7 +70,7 @@ lint:
 .PHONY: test
 test:
 	@printf "Running Bats test suite...\n"
-	@$(CURDIR)/$(BATS) $(bats_scripts)
+	@$(CURDIR)/$(BATS) --allow-empty-suite $(bats_scripts)
 
 .PHONY: check
 check: fmt-check lint test

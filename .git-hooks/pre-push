@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # =========================================================================== #
-# Description: Pre-commit validation.
+# Description: Pre-push validation.
 # =========================================================================== #
 
 set -euo pipefail
-make quick-check
+make check
