@@ -5,16 +5,13 @@ exe_name     := hop
 
 bin_dir      := bin
 src_dir      := src
-lib_dir      := lib
 
 test_dir     := test
 hooks_dir    := .git-hooks
 
 bin_file     := $(bin_dir)/$(exe_name)
 src_file     := $(src_dir)/core.sh
-
-lib_scripts  := $(wildcard $(lib_dir)/*.sh)
-app_scripts  := $(bin_file) $(src_file) $(lib_scripts)
+app_scripts  := $(bin_file) $(src_file)
 
 bats_scripts := $(wildcard $(test_dir)/*.bats)
 test_scripts := $(bats_scripts) $(test_dir)/test_helper.bash
