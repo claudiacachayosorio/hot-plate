@@ -28,8 +28,7 @@ SHFMT        ?= shfmt
 SHELLCHECK   ?= shellcheck
 BATS          = $(test_dir)/bats/bin/bats
 
-.PHONY: help setup fmt fmt-check lint test check quick-check
-
+.PHONY: help
 help:
 	@cat <<-EOF
 	Usage: make [TARGET]
@@ -43,6 +42,7 @@ help:
 	  quick-check  Check formatting and lint.
 	EOF
 
+.PHONY: setup
 setup:
 	@printf "Updating test dependencies...\n"
 	@git submodule update --init --recursive
@@ -50,14 +50,17 @@ setup:
 	@chmod +x $(git_hooks)
 	@git config core.hooksPath $(hooks_dir)
 
+.PHONY: fmt
 fmt:
 	@printf "Formatting scripts with shfmt...\n"
 	@$(SHFMT) -w $(SHELL_FILES)
 
+.PHONY: fmt-check
 fmt-check:
 	@printf "Checking formatting with shfmt...\n"
 	@$(SHFMT) -d $(SHELL_FILES)
 
+.PHONY: lint
 lint:
 	@printf "Linting scripts with ShellCheck...\n"
 	@$(SHELLCHECK) \
@@ -67,10 +70,13 @@ lint:
 		--external-sources \
 		$(SHELL_FILES)
 
+.PHONY: test
 test:
 	@printf "Running Bats test suite...\n"
 	@$(CURDIR)/$(BATS) $(bats_scripts)
 
+.PHONY: check
 check: fmt-check lint test
 
+.PHONY: quick-check
 quick-check: fmt-check lint
