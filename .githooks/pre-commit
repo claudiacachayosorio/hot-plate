@@ -2,6 +2,7 @@
 # =========================================================================== #
 # Description: Pre-commit linting.
 # =========================================================================== #
+set -euo pipefail
 
 bash_scripts="$(
   git diff --staged --name-only --diff-filter=ACMR \
@@ -9,5 +10,5 @@ bash_scripts="$(
 )"
 
 if [[ -n "$bash_scripts" ]]; then
-  make lint BASH_SCRIPTS="$bash_scripts"
+  make lint BASH_SCRIPTS="${bash_scripts//$'\n'/ }"
 fi
