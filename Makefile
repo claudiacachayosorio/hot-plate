@@ -59,7 +59,12 @@ fmt-check:
 
 lint:
 	@printf "Linting scripts with ShellCheck...\n"
-	@$(SHELLCHECK) --severity=error --format=gcc $(SHELL_FILES)
+	@$(SHELLCHECK) \
+		--shell    bash    \
+		--severity error   \
+		--format   gcc     \
+		--external-sources \
+		$(SHELL_FILES)
 
 test:
 	@printf "Running Bats test suite...\n"
