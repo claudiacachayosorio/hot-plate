@@ -20,8 +20,7 @@ bats_scripts := $(wildcard $(test_dir)/*.bats)
 test_scripts := $(bats_scripts) $(test_dir)/test_helper.bash
 
 git_hooks    := $(wildcard $(hooks_dir)/*)
-ci_scripts   := $(wildcard .github/scripts/*.sh)
-dev_scripts  := $(git_hooks) $(ci_scripts)
+dev_scripts  := $(git_hooks) $(wildcard .github/scripts/*.sh)
 
 SHELL_FILES  ?= $(app_scripts) $(test_scripts) $(dev_scripts)
 
@@ -40,7 +39,7 @@ help:
 	  fmt-check  Check formatting without modifying files.
 	  lint       Lint scripts with ShellCheck.
 	  test       Run entire Bats test suite.
-	  check      Run formatting, lint and tests.
+	  check      Run formatting, linting and tests.
 	EOF
 
 setup:
@@ -66,4 +65,4 @@ test:
 	@printf "Running Bats test suite...\n"
 	@$(CURDIR)/$(BATS) $(bats_scripts)
 
-check: lint fmt-check test
+check: fmt-check lint test
