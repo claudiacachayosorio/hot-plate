@@ -18,9 +18,10 @@ lib_scripts  := $(wildcard $(lib_dir)/*.sh)
 app_scripts  := $(bin_file) $(src_file) $(lib_scripts)
 
 ci_scripts   := $(wildcard .github/scripts/*.sh)
-BASH_SCRIPTS ?= $(app_scripts) $(test_scripts) $(ci_scripts)
+SHELL_FILES  ?= $(app_scripts) $(test_scripts) $(ci_scripts)
 
 SHELLCHECK   ?= shellcheck
+SHFMT        ?= shfmt
 BATS          = $(test_dir)/bats/bin/bats
 
 .PHONY: help lint test check
@@ -29,22 +30,29 @@ help:
 	@cat <<-EOF
 	Usage: make [TARGET]
 	Targets:
-	  lint     Run ShellCheck on all scripts.
-	  test     Run entire Bats test suite.
-	  check    Execute lint and test targets.
+	  fmt        Format scripts with shfmt.
+	  fmt-check  Check formatting without modifying files.
+	  lint       Lint scripts with ShellCheck.
+	  test       Run entire Bats test suite.
+	  check      Run formatting, lint and tests.
 	EOF
+
+fmt:
+	@printf "Formatting scripts with shfmt...\n"
+	@$(SHFMT) -w $(SHELL_FILES)
+
+fmt-check:
+	@printf "Checking formatting with shfmt...\n"
+	@$(SHFMT) -d $(SHELL_FILES)
 
 lint:
 	@printf "Linting scripts with ShellCheck...\n"
-	@$(SHELLCHECK) --severity=error --format=gcc $(BASH_SCRIPTS)
+	@$(SHELLCHECK) --severity=error --format=gcc $(SHELL_FILES)
 
 test:
 	@printf "Verifying test dependencies...\n"
 	@git submodule update --init --recursive
-	@chmod +x $(BATS)
 	@printf "Dependencies up to date. Running test suite...\n"
 	@$(CURDIR)/$(BATS) $(bats_scripts)
 
-check:
-	$(MAKE) lint
-	$(MAKE) test
+check: lint fmt-check test
