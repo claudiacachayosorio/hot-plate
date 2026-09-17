@@ -28,18 +28,19 @@ SHFMT        ?= shfmt
 SHELLCHECK   ?= shellcheck
 BATS          = $(test_dir)/bats/bin/bats
 
-.PHONY: help setup fmt fmt-check lint test check
+.PHONY: help setup fmt fmt-check lint test check quick-check
 
 help:
 	@cat <<-EOF
 	Usage: make [TARGET]
 	Targets:
-	  setup      Set up local development environment.
-	  fmt        Format scripts with shfmt.
-	  fmt-check  Check formatting without modifying files.
-	  lint       Lint scripts with ShellCheck.
-	  test       Run entire Bats test suite.
-	  check      Run formatting, linting and tests.
+	  setup        Set up local development environment.
+	  fmt          Format scripts with shfmt.
+	  fmt-check    Check formatting without modifying files.
+	  lint         Lint scripts with ShellCheck.
+	  test         Run entire Bats test suite.
+	  check        Check formatting, lint and run test suite.
+	  quick-check  Check formatting and lint.
 	EOF
 
 setup:
@@ -71,3 +72,5 @@ test:
 	@$(CURDIR)/$(BATS) $(bats_scripts)
 
 check: fmt-check lint test
+
+quick-check: fmt-check lint
