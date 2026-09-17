@@ -1,16 +1,39 @@
+# =========================================================================== #
 # EditorConfig for hot-plate
+# =========================================================================== #
 
 root = true
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[[shell]]
-indent_style = tab
-# shfmt extensions
-shell_variant = {bash,bats}
+# =========================================================================== #
+# Shell Files
+# =========================================================================== #
+
+[*.{sh,bash,bats}]
+indent_style = space
+indent_size = 2
+
+[{bin/**,.githooks/**}]
+indent_style = space
+indent_size = 2
+
+# shfmt configuration
+
+[*.bats]
+shell_variant = bats
 switch_case_indent = true
-keep_padding = true
+
+[[bash]]
+shell_variant = bash
+indent_style = space
+indent_size = 2
+switch_case_indent = true
+
+# =========================================================================== #
+# Other Extensions
+# =========================================================================== #
 
 [*.{yml,yaml}]
 indent_style = space
@@ -18,3 +41,4 @@ indent_size = 2
 
 [Makefile]
 indent_style = tab
+tab_width = 4
