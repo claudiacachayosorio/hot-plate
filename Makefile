@@ -11,14 +11,17 @@ test_dir     := test
 bin_file     := $(bin_dir)/$(exe_name)
 src_file     := $(src_dir)/core.sh
 
-bats_scripts := $(wildcard $(test_dir)/*.bats)
-test_scripts := $(bats_scripts) $(test_dir)/test_helper.bash
-
 lib_scripts  := $(wildcard $(lib_dir)/*.sh)
 app_scripts  := $(bin_file) $(src_file) $(lib_scripts)
 
+git_hooks    := $(wildcard .githooks/*)
 ci_scripts   := $(wildcard .github/scripts/*.sh)
-SHELL_FILES  ?= $(app_scripts) $(test_scripts) $(ci_scripts)
+dev_scripts  := $(git_hooks) $(ci_scripts)
+
+bats_scripts := $(wildcard $(test_dir)/*.bats)
+test_scripts := $(bats_scripts) $(test_dir)/test_helper.bash
+
+SHELL_FILES  ?= $(app_scripts) $(test_scripts) $(dev_scripts)
 
 SHELLCHECK   ?= shellcheck
 SHFMT        ?= shfmt
