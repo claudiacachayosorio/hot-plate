@@ -8,7 +8,7 @@ src_dir      := src
 lib_dir      := lib
 
 test_dir     := test
-hooks_dir    := .githooks
+hooks_dir    := .git-hooks
 
 bin_file     := $(bin_dir)/$(exe_name)
 src_file     := $(src_dir)/core.sh
