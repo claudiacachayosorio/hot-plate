@@ -5,14 +5,14 @@
 
 set -euo pipefail
 
-if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-	printf "Script must be run inside a GitHub Actions workflow.\n" >&2
-	exit 1
+if [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
+  printf "Script must be run inside a GitHub Actions workflow.\n" >&2
+  exit 1
 fi
 
 if [[ $# -eq 0 ]]; then
-	printf "Commit message is missing.\n" >&2
-	exit 1
+  printf "Commit message is missing.\n" >&2
+  exit 1
 fi
 
 commit_msg="$1"
@@ -23,10 +23,19 @@ bump=""
 exit_msg="Commit type '${commit_type}' does not require a version bump."
 
 case "$commit_type" in
-	*!)   bump="major" ;;
-	feat) bump="minor" ;;
-	fix)  bump="patch" ;;
-	*)    printf "%s\n" "$exit_msg" ; exit 0 ;;
+*!)
+  bump="major"
+  ;;
+feat)
+  bump="minor"
+  ;;
+fix)
+  bump="patch"
+  ;;
+*)
+  printf "%s\n" "$exit_msg"
+  exit 0
+  ;;
 esac
 
 user_name="github-actions[bot]"
@@ -42,13 +51,22 @@ minor=0
 patch=0
 
 if [[ "$cur_tag" != "0.0.0" ]]; then
-	IFS='.' read -r major minor patch <<< "$cur_ver"
+  IFS='.' read -r major minor patch <<<"$cur_ver"
 fi
 
 case "$bump" in
-	major) major=$((major+1)) ; minor=0 ; patch=0 ;;
-	minor) minor=$((minor+1)) ; patch=0 ;;
-	patch) patch=$((patch+1)) ;;
+major)
+  major=$((major + 1))
+  minor=0
+  patch=0
+  ;;
+minor)
+  minor=$((minor + 1))
+  patch=0
+  ;;
+patch)
+  patch=$((patch + 1))
+  ;;
 esac
 
 new_ver="${major}.${minor}.${patch}"

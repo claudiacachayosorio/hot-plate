@@ -4,10 +4,10 @@
 # =========================================================================== #
 
 bash_scripts="$(
-	git diff --staged --name-only --diff-filter=ACMR \
-	-- '*.sh' 'bin/**' '.githooks/**'
+  git diff --staged --name-only --diff-filter=ACMR \
+    -- '*.sh' 'bin/**' '.githooks/**'
 )"
 
 if [[ -n "${bash_scripts//[[:space:]]/}" ]]; then
-	make lint BASH_SCRIPTS="$bash_scripts"
+  make lint
 fi

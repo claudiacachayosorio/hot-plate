@@ -4,9 +4,9 @@
 # =========================================================================== #
 
 die() {
-	local error_desc="$1"
-	printf "Aborting commit due to %s.\n" "$error_desc" >&2
-	exit 1
+  local error_desc="$1"
+  printf "Aborting commit due to %s.\n" "$error_desc" >&2
+  exit 1
 }
 
 commit_msg="$(<"$1")"
@@ -15,9 +15,9 @@ scope_regex="^\([[:alnum:]-]+\):"
 msg_regexp="${scope_regex} .+$"
 
 if [[ -z "$commit_msg" ]]; then
-	die "empty commit message"
+  die "empty commit message"
 elif [[ ! "$commit_msg" =~ $scope_regex ]]; then
-	die "missing or invalid commit scope"
+  die "missing or invalid commit scope"
 elif [[ ! "$commit_msg" =~ $msg_regexp ]]; then
-	die "missing commit description"
+  die "missing commit description"
 fi
