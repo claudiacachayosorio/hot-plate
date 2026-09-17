@@ -15,5 +15,4 @@ if [[ -z "$shell_files" ]]; then
   exit 0
 fi
 
-make fmt-check SHELL_FILES="$shell_files"
-make lint SHELL_FILES="$shell_files"
+make fmt-check lint SHELL_FILES="$shell_files"
