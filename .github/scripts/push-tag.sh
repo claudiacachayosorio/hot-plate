@@ -35,10 +35,8 @@ fix)
   ;;
 esac
 
-user_name="github-actions[bot]"
-user_email="41898282+github-actions[bot]@users.noreply.github.com"
-git config --global user.name "$user_name"
-git config --global user.email "$user_email"
+git config user.name "github-actions[bot]"
+git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
 cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "0.0.0")"
 cur_ver="${cur_tag#v}"
