@@ -4,24 +4,24 @@
 # =========================================================================== #
 set -euo pipefail
 
+dry_run="false"
+
+if [[ "${1:-}" == "--dry-run" ]]; then
+  dry_run="true"
+  shift
+fi
+
 if [[ $# -eq 0 ]]; then
   printf "Commit message is missing.\n" >&2
   exit 1
 fi
 
-dry_run="true"
-[[ "$1" == "--dry-run" ]] && {
-  dry_run="false"
-  shift
-}
-
-if [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
-  printf "Script is being run outside of GitHub Actions workflow.\n"
-  printf "Use --dry-run flag to run script locally.\n"
+if [[ "$dry_run" != "true" && "${GITHUB_ACTIONS:-}" != "true" ]]; then
+  printf "--dry-run flag must be passed to run script locally.\n" >&2
   exit 1
 fi
 
-commit_msg="$*"
+commit_msg="$1"
 commit_prefix="${commit_msg%%:*}"
 commit_type="${commit_prefix/(*)/}"
 bump=""
@@ -81,6 +81,8 @@ if [[ "$dry_run" == false ]]; then
 
 else
   cat <<-EOF
+	Dry run — no tag will be created.
+
 	Commit type:     ${commit_type}
 	Version bump:    ${bump}
 	Current tag:     ${cur_tag}
