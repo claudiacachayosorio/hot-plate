@@ -89,12 +89,10 @@ if [[ "$dry_run" == true ]]; then
   cat <<-EOF
 	Dry run — no tag will be created.
 
-	Commit type:     ${commit_type}
-	Version bump:    ${bump}
-	Current tag:     ${cur_tag}
-	Current version: ${cur_ver}
-	New version:     ${new_ver}
-	New tag:         ${new_tag}
+	Commit type:   ${commit_type}
+	Version bump:  ${bump}
+	Current tag:   ${cur_tag}
+	Created tag:   ${new_tag}
 	EOF
 
 else
