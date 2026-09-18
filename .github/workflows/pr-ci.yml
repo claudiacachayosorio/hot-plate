@@ -1,8 +1,8 @@
 name: PR - CI Pipeline
 run-name: >-
-  "CI for PR #${{ github.event.pull_request.number || 'N/A' }}
+  CI for PR #${{ github.event.pull_request.number || 'N/A' }}
   from ${{ github.head_ref || github.ref_name }}
-  (${{ github.event.action || github.event_name }})"
+  (${{ github.event.action || github.event_name }})
 
 on:
   pull_request:
@@ -22,8 +22,10 @@ jobs:
         with:
           submodules: true
 
-      - name: Run Makefile Check
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install --yes shfmt shellcheck
-          make check
+
+      - name: Run Makefile check
+        run: make check
