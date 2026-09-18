@@ -1,7 +1,11 @@
-# Makefile for hot-plate
+# -----------------------------------------------------------------------------
+# Variables
+# -----------------------------------------------------------------------------
 
 app_name     := hot-plate
 exe_name     := hop
+
+# --- Paths -------------------------------------------------------------------
 
 bin_dir      := bin
 src_dir      := src
@@ -20,15 +24,21 @@ dev_scripts  := $(git_hooks) $(wildcard .github/scripts/*.sh)
 
 shell_files  ?= $(app_scripts) $(test_scripts) $(dev_scripts)
 
+# --- Tools -------------------------------------------------------------------
+
 SHFMT        ?= shfmt
 SHELLCHECK   ?= shellcheck
 BATS         ?= $(test_dir)/bats/bin/bats
 
-SHELLCHECK_FLAGS ?= \
-	--shell bash \
+SHELLCHECK_FLAGS ?=  \
+	--shell    bash  \
 	--severity error \
-	--format gcc \
+	--format   gcc   \
 	--external-sources
+
+# -----------------------------------------------------------------------------
+# Targets
+# -----------------------------------------------------------------------------
 
 .PHONY: help
 help:
@@ -44,6 +54,8 @@ help:
 	  check        Check formatting, lint and run test suite.
 	  quick-check  Check formatting and lint.
 	EOF
+
+# --- Setup -------------------------------------------------------------------
 
 .PHONY: check-tools
 check-tools:
@@ -64,6 +76,8 @@ setup: check-tools
 	@chmod +x $(git_hooks)
 	@git config core.hooksPath $(hooks_dir)
 
+# --- Formatting --------------------------------------------------------------
+
 .PHONY: fmt
 fmt:
 	@printf "Formatting scripts with shfmt...\n"
@@ -74,6 +88,8 @@ fmt-check:
 	@printf "Checking formatting with shfmt...\n"
 	@$(SHFMT) --diff $(shell_files)
 
+# --- Validation --------------------------------------------------------------
+
 .PHONY: lint
 lint:
 	@printf "Linting scripts with ShellCheck...\n"
@@ -83,6 +99,8 @@ lint:
 test:
 	@printf "Running Bats test suite...\n"
 	@$(CURDIR)/$(BATS) --allow-empty-suite $(bats_scripts)
+
+# --- Checks ------------------------------------------------------------------
 
 .PHONY: check
 check: fmt-check lint test
