@@ -17,9 +17,7 @@ fi
 commit_msg="$1"
 commit_prefix="${commit_msg%%:*}"
 commit_type="${commit_prefix//\(*\)/}"
-
 bump=""
-exit_msg="Commit type '${commit_type}' does not require a version bump."
 
 case "$commit_type" in
 *!)
@@ -32,7 +30,7 @@ fix)
   bump="patch"
   ;;
 *)
-  printf "%s\n" "$exit_msg"
+  printf "Commit type '%s' does not require a version bump.\n" "$commit_type"
   exit 0
   ;;
 esac
