@@ -1,9 +1,15 @@
 name: Push - Version Tag
-run-name: Push version tag to ${{ github.ref_name }}
+run-name: Push tag to ${{ github.ref_name }} (${{ github.event_name }})
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit message to use for dry run."
+        type: string
+        required: true
 
 permissions:
   contents: write
@@ -24,5 +30,11 @@ jobs:
 
       - name: Create and push version tag
         env:
-          COMMIT: ${{ github.event.head_commit.message }}
-        run: ./.github/scripts/push-tag.sh "$COMMIT"
+          COMMIT: ${{ inputs.commit || github.event.head_commit.message }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            ./.github/scripts/push-tag.sh --dry-run "$COMMIT"
+          else
+            ./.github/scripts/push-tag.sh "$COMMIT"
+          fi
