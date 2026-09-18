@@ -1,0 +1,27 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Shell formats
+
+[*.{sh,bash,bats}]
+indent_style = space
+indent_size = 2
+
+[{.git-hooks/**,bin/**}]
+indent_style = space
+indent_size = 2
+
+# shfmt settings
+
+[*.bats]
+shell_variant = bats
+binary_next_line = true
+
+[[bash]]
+shell_variant = bash
+binary_next_line = true
