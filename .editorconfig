@@ -1,27 +1,22 @@
-# =========================================================================== #
-# EditorConfig for hot-plate
-# =========================================================================== #
-
 root = true
 
 [*]
+charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# =========================================================================== #
-# Shell Files
-# =========================================================================== #
+# Shell formats
 
 [*.{sh,bash,bats}]
 indent_style = space
 indent_size = 2
 
-[{bin/**,.githooks/**}]
+[{.githooks/**,bin/**}]
 indent_style = space
 indent_size = 2
 
-# shfmt configuration
+# shfmt settings
 
 [*.bats]
 shell_variant = bats
@@ -29,18 +24,4 @@ binary_next_line = true
 
 [[bash]]
 shell_variant = bash
-indent_style = space
-indent_size = 2
 binary_next_line = true
-
-# =========================================================================== #
-# Other Extensions
-# =========================================================================== #
-
-[*.{yml,yaml}]
-indent_style = space
-indent_size = 2
-
-[Makefile]
-indent_style = tab
-tab_width = 4
