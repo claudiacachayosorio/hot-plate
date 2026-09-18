@@ -1,6 +1,6 @@
 name: PR - CI Pipeline
 run-name: >-
-  "CI for PR #${{ github.event.pull_request.number || '?' }}
+  "CI for PR #${{ github.event.pull_request.number || 'N/A' }}
   from ${{ github.head_ref || github.ref_name }}
   (${{ github.event.action || github.event_name }})"
 
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          submodules: recursive
+          submodules: true
 
       - name: Run Makefile Check
         run: |
