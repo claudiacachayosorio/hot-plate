@@ -5,16 +5,16 @@
 
 set -euo pipefail
 
+dry_run=false
+
 # --- Arguments ---------------------------------------------------------------
 
-dry_run="false"
-
 if [[ "${1:-}" == "--dry-run" ]]; then
-  dry_run="true"
+  dry_run=true
   shift
 fi
 
-if [[ "$dry_run" != "true" && "${GITHUB_ACTIONS:-}" != "true" ]]; then
+if [[ "$dry_run" != true && "${GITHUB_ACTIONS:-}" != true ]]; then
   { #stderr
     printf "Script is being run outside of a GitHub Actions workflow.\n"
     printf "Use --dry-run flag to run script locally.\n"
@@ -57,7 +57,7 @@ cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "v0.0.0")"
 cur_ver="${cur_tag#v}"
 
 if [[ ! "$cur_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  printf "Current tag '%s' is malformed.\n" "$cur_tag" >&2
+  printf "Current tag '%s' is invalid.\n" "$cur_tag" >&2
   exit 1
 fi
 
@@ -85,7 +85,7 @@ new_tag="v${new_ver}"
 
 # --- Payload -----------------------------------------------------------------
 
-if [[ "$dry_run" == "true" ]]; then
+if [[ "$dry_run" == true ]]; then
   cat <<-EOF
 	Dry run — no tag will be created.
 
