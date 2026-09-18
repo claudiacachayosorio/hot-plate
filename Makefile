@@ -63,13 +63,13 @@ help: ## Print this help guide.
 .PHONY: check-tools
 check-tools: ## Verify system dependencies.
 	@command -v $(SHFMT) >/dev/null || {
-			printf "error: %s not found.\n" "$(SHFMT)" >&2
-			exit 1
-		}
+		printf "error: %s not found.\n" "$(SHFMT)" >&2
+		exit 1
+	}
 	@command -v $(SHELLCHECK) >/dev/null || {
-			printf "error: %s not found.\n" "$(SHELLCHECK)" >&2
-			exit 1
-		}
+		printf "error: %s not found.\n" "$(SHELLCHECK)" >&2
+		exit 1
+	}
 
 .PHONY: setup
 setup: check-tools ## Set up local environment.
