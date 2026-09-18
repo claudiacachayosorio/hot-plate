@@ -2,24 +2,25 @@
 # =========================================================================== #
 # Description: Generate and push version tag.
 # =========================================================================== #
+
 set -euo pipefail
 
-dry_run="false"
+# --- Settings ----------------------------------------------------------------
 
-# --- Safeguards --------------------------------------------------------------
+dry_run="false"
 
 if [[ "${1:-}" == "--dry-run" ]]; then
   dry_run="true"
   shift
 fi
 
-if [[ $# -eq 0 ]]; then
-  printf "Commit message is missing.\n" >&2
+if [[ "$dry_run" != "true" && "${GITHUB_ACTIONS:-}" != "true" ]]; then
+  printf "--dry-run flag must be passed to run script locally.\n" >&2
   exit 1
 fi
 
-if [[ "$dry_run" != "true" && "${GITHUB_ACTIONS:-}" != "true" ]]; then
-  printf "--dry-run flag must be passed to run script locally.\n" >&2
+if [[ $# -eq 0 ]]; then
+  printf "Commit message is missing.\n" >&2
   exit 1
 fi
 
@@ -47,7 +48,7 @@ fix)
   ;;
 esac
 
-# --- Current version & tag ---------------------------------------------------
+# --- Current version ---------------------------------------------------------
 
 cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "0.0.0")"
 cur_ver="${cur_tag#v}"
@@ -56,11 +57,15 @@ major=0
 minor=0
 patch=0
 
-if [[ "$cur_tag" != "0.0.0" ]]; then
+if [[ ! "$cur_tag" =~ ^[0-9]+.[0-9]+.[0-9]+$ ]]; then
+  printf "Current tag '%s' is malformed.\n" "$cur_tag" >&2
+  exit 1
+
+elif [[ "$cur_tag" != "0.0.0" ]]; then
   IFS='.' read -r major minor patch <<<"$cur_ver"
 fi
 
-# --- New version & tag -------------------------------------------------------
+# --- New version -------------------------------------------------------------
 
 case "$bump" in
 major)
@@ -82,13 +87,7 @@ new_tag="v${new_ver}"
 
 # --- Payload -----------------------------------------------------------------
 
-if [[ "$dry_run" == false ]]; then
-  git config user.name "github-actions[bot]"
-  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-  git tag -a "$new_tag" -m "Release ${new_tag}"
-  git push origin "$new_tag"
-
-else
+if [[ "$dry_run" == "true" ]]; then
   cat <<-EOF
 	Dry run — no tag will be created.
 
@@ -99,4 +98,10 @@ else
 	New version:     ${new_ver}
   New tag:         ${new_tag}
 	EOF
+
+else
+  git config user.name "github-actions[bot]"
+  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  git tag -a "$new_tag" -m "Release ${new_tag}"
+  git push origin "$new_tag"
 fi
