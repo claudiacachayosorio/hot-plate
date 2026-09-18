@@ -4,17 +4,24 @@
 # =========================================================================== #
 set -euo pipefail
 
-if [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
-  printf "Script must be run inside a GitHub Actions workflow.\n" >&2
-  exit 1
-fi
-
 if [[ $# -eq 0 ]]; then
   printf "Commit message is missing.\n" >&2
   exit 1
 fi
 
-commit_msg="$1"
+dry_run="true"
+[[ "$1" == "--dry-run" ]] && {
+  dry_run="false"
+  shift
+}
+
+if [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
+  printf "Script is being run outside of GitHub Actions workflow.\n"
+  printf "Use --dry-run flag to run script locally.\n"
+  exit 1
+fi
+
+commit_msg="$*"
 commit_prefix="${commit_msg%%:*}"
 commit_type="${commit_prefix/(*)/}"
 bump=""
@@ -31,6 +38,7 @@ fix)
   ;;
 *)
   printf "Commit type '%s' does not require a version bump.\n" "$commit_type"
+  printf "Skipping release.\n"
   exit 0
   ;;
 esac
@@ -67,5 +75,17 @@ esac
 new_ver="${major}.${minor}.${patch}"
 new_tag="v${new_ver}"
 
-git tag -a "$new_tag" -m "Release ${new_tag}"
-git push origin "$new_tag"
+if [[ "$dry_run" == false ]]; then
+  git tag -a "$new_tag" -m "Release ${new_tag}"
+  git push origin "$new_tag"
+
+else
+  cat <<-EOF
+	Commit type:     ${commit_type}
+	Version bump:    ${bump}
+	Current tag:     ${cur_tag}
+  Current version: ${cur_ver}
+	New version:     ${new_ver}
+  New tag:         ${new_tag}
+	EOF
+fi
