@@ -32,7 +32,7 @@ shell_files  ?= $(app_scripts) $(test_scripts) $(dev_scripts)
 
 SHFMT        ?= shfmt
 SHELLCHECK   ?= shellcheck
-BATS         ?= $(test_dir)/bats/bin/bats
+BATS         ?= $(CURDIR)/$(test_dir)/bats/bin/bats
 
 SHELLCHECK_FLAGS ?=  \
 	--shell    bash  \
@@ -101,7 +101,7 @@ lint: ## Lint scripts with ShellCheck.
 .PHONY: test
 test: ## Run entire Bats test suite.
 	@printf "Running Bats test suite...\n"
-	@$(CURDIR)/$(BATS) --allow-empty-suite $(bats_scripts)
+	@$(BATS) --allow-empty-suite $(bats_scripts)
 
 # --- Checks ------------------------------------------------------------------
 
