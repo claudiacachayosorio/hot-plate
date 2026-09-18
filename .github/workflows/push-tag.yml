@@ -1,6 +1,5 @@
 name: Push - Version Tag
-run-name: >-
-  "Push tag to ${{ github.event.repository.name }}/${{ github.ref_name }}"
+run-name: Push tag to ${{ github.ref_name }}
 
 on:
   push:
