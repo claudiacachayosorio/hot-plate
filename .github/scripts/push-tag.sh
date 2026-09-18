@@ -16,7 +16,7 @@ fi
 
 commit_msg="$1"
 commit_prefix="${commit_msg%%:*}"
-commit_type="${commit_prefix//\(*\)/}"
+commit_type="${commit_prefix/(*)/}"
 bump=""
 
 case "$commit_type" in
