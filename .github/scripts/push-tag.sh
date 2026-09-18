@@ -6,6 +6,8 @@ set -euo pipefail
 
 dry_run="false"
 
+# --- Safeguards --------------------------------------------------------------
+
 if [[ "${1:-}" == "--dry-run" ]]; then
   dry_run="true"
   shift
@@ -20,6 +22,8 @@ if [[ "$dry_run" != "true" && "${GITHUB_ACTIONS:-}" != "true" ]]; then
   printf "--dry-run flag must be passed to run script locally.\n" >&2
   exit 1
 fi
+
+# --- Version bump ------------------------------------------------------------
 
 commit_msg="$1"
 commit_prefix="${commit_msg%%:*}"
@@ -43,8 +47,7 @@ fix)
   ;;
 esac
 
-git config user.name "github-actions[bot]"
-git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+# --- Current version & tag ---------------------------------------------------
 
 cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "0.0.0")"
 cur_ver="${cur_tag#v}"
@@ -56,6 +59,8 @@ patch=0
 if [[ "$cur_tag" != "0.0.0" ]]; then
   IFS='.' read -r major minor patch <<<"$cur_ver"
 fi
+
+# --- New version & tag -------------------------------------------------------
 
 case "$bump" in
 major)
@@ -75,7 +80,11 @@ esac
 new_ver="${major}.${minor}.${patch}"
 new_tag="v${new_ver}"
 
+# --- Payload -----------------------------------------------------------------
+
 if [[ "$dry_run" == false ]]; then
+  git config user.name "github-actions[bot]"
+  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
   git tag -a "$new_tag" -m "Release ${new_tag}"
   git push origin "$new_tag"
 
