@@ -1,5 +1,5 @@
 name: Push - Version Tag
-run-name: Push tag to ${{ github.ref_name }}
+run-name: Push version tag to ${{ github.ref_name }}
 
 on:
   push:
@@ -22,10 +22,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Update version
+      - name: Create and push version tag
         env:
-          SCRIPT: "./.github/scripts/push-tag.sh"
           COMMIT: ${{ github.event.head_commit.message }}
-        run: |
-          chmod +x "$SCRIPT"
-          "$SCRIPT" "$COMMIT"
+        run: ./.github/scripts/push-tag.sh "$COMMIT"
