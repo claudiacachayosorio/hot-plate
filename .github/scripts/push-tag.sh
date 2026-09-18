@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-# --- Settings ----------------------------------------------------------------
+# --- Arguments ---------------------------------------------------------------
 
 dry_run="false"
 
@@ -15,7 +15,10 @@ if [[ "${1:-}" == "--dry-run" ]]; then
 fi
 
 if [[ "$dry_run" != "true" && "${GITHUB_ACTIONS:-}" != "true" ]]; then
-  printf "--dry-run flag must be passed to run script locally.\n" >&2
+  { #stderr
+    printf "Script is being run outside of a GitHub Actions workflow.\n"
+    printf "Use --dry-run flag to run script locally.\n"
+  } >&2
   exit 1
 fi
 
@@ -50,20 +53,15 @@ esac
 
 # --- Current version ---------------------------------------------------------
 
-cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "0.0.0")"
+cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "v0.0.0")"
 cur_ver="${cur_tag#v}"
 
-major=0
-minor=0
-patch=0
-
-if [[ ! "$cur_tag" =~ ^[0-9]+.[0-9]+.[0-9]+$ ]]; then
+if [[ ! "$cur_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   printf "Current tag '%s' is malformed.\n" "$cur_tag" >&2
   exit 1
-
-elif [[ "$cur_tag" != "0.0.0" ]]; then
-  IFS='.' read -r major minor patch <<<"$cur_ver"
 fi
+
+IFS='.' read -r major minor patch <<<"$cur_ver"
 
 # --- New version -------------------------------------------------------------
 
@@ -94,9 +92,9 @@ if [[ "$dry_run" == "true" ]]; then
 	Commit type:     ${commit_type}
 	Version bump:    ${bump}
 	Current tag:     ${cur_tag}
-  Current version: ${cur_ver}
+	Current version: ${cur_ver}
 	New version:     ${new_ver}
-  New tag:         ${new_tag}
+	New tag:         ${new_tag}
 	EOF
 
 else
