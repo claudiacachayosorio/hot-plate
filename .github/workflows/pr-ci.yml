@@ -20,10 +20,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
-        with:
-          severity: error
-          ignore_paths: >-
-            test/bats
-            test/test_helper
+      - name: Run Makefile Check
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shfmt shellcheck
+          make check

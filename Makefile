@@ -106,7 +106,7 @@ test: ## Run entire Bats test suite.
 # --- Checks ------------------------------------------------------------------
 
 .PHONY: check
-check: fmt-check lint test ## Check formatting and run linter & test suite.
+check: check-tools fmt-check lint test ## Check formatting and run linter & test suite.
 
 .PHONY: quick-check
 quick-check: fmt-check lint ## Check formatting and run linter.
