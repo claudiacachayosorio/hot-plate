@@ -1,10 +1,10 @@
-SHELL := bash
-.ONESHELL:
-.SHELLFLAGS := -eu -o pipefail -c
+# =============================================================================
+# Configuration
+# =============================================================================
 
-# -----------------------------------------------------------------------------
-# Variables
-# -----------------------------------------------------------------------------
+SHELL        := bash
+.ONESHELL:
+.SHELLFLAGS  := -eu -o pipefail -c
 
 app_name     := hot-plate
 exe_name     := hop
@@ -40,28 +40,29 @@ SHELLCHECK_FLAGS ?=  \
 	--format   gcc   \
 	--external-sources
 
-# -----------------------------------------------------------------------------
+# =============================================================================
 # Targets
-# -----------------------------------------------------------------------------
+# =============================================================================
 
-.PHONY: help
-help: ## Print this help guide.
+.PHONY: help ## Print this help guide.
+help:
 	@awk '
 		BEGIN {
-			FS = ":.*##"
+			FS = "##"
 			print "Usage: make [TARGET]"
 			print ""
 			print "Targets:"
 		}
-		/^[a-zA-Z0-9_-]+:.*##/ {
+		/^\.PHONY: [a-zA-Z0-9_-]+ ##/ {
+			sub(/.PHONY: /, "", $$1)
 			printf "  %-12s %s\n", $$1, $$2
 		}
 	' $(MAKEFILE_LIST)
 
 # --- Setup -------------------------------------------------------------------
 
-.PHONY: check-tools
-check-tools: ## Verify system dependencies.
+.PHONY: check-tools ## Verify system dependencies.
+check-tools:
 	@command -v $(SHFMT) >/dev/null || {
 		printf "error: %s not found.\n" "$(SHFMT)" >&2
 		exit 1
@@ -71,8 +72,8 @@ check-tools: ## Verify system dependencies.
 		exit 1
 	}
 
-.PHONY: setup
-setup: check-tools ## Set up local environment.
+.PHONY: setup ## Set up local environment.
+setup: check-tools
 	@printf "Updating test dependencies...\n"
 	@git submodule update --init --recursive
 	@printf "Configuring Git hooks...\n"
@@ -81,32 +82,32 @@ setup: check-tools ## Set up local environment.
 
 # --- Formatting --------------------------------------------------------------
 
-.PHONY: fmt
-fmt: ## Format scripts with shfmt.
+.PHONY: fmt ## Format scripts with shfmt.
+fmt:
 	@printf "Formatting scripts with shfmt...\n"
 	@$(SHFMT) --write $(shell_files)
 
-.PHONY: fmt-check
-fmt-check: ## Check formatting without modifying files.
+.PHONY: fmt-check ## Check formatting without modifying files.
+fmt-check:
 	@printf "Checking formatting with shfmt...\n"
 	@$(SHFMT) --diff $(shell_files)
 
 # --- Validation --------------------------------------------------------------
 
-.PHONY: lint
-lint: ## Lint scripts with ShellCheck.
+.PHONY: lint ## Lint scripts with ShellCheck.
+lint:
 	@printf "Linting scripts with ShellCheck...\n"
 	@$(SHELLCHECK) $(SHELLCHECK_FLAGS) $(shell_files)
 
-.PHONY: test
-test: ## Run entire Bats test suite.
+.PHONY: test ## Run entire Bats test suite.
+test:
 	@printf "Running Bats test suite...\n"
 	@$(BATS) --allow-empty-suite $(bats_scripts)
 
 # --- Checks ------------------------------------------------------------------
 
-.PHONY: check
-check: fmt-check lint test ## Check formatting and run linter & test suite.
+.PHONY: check ## Check formatting and run linter & test suite.
+check: check-tools fmt-check lint test
 
-.PHONY: quick-check
-quick-check: fmt-check lint ## Check formatting and run linter.
+.PHONY: quick-check ## Check formatting and run linter.
+quick-check: fmt-check lint

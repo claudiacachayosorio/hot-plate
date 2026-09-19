@@ -2,10 +2,23 @@
 # =========================================================================== #
 # Description: Generate and push version tag.
 # =========================================================================== #
+
 set -euo pipefail
 
-if [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
-  printf "Script must be run inside a GitHub Actions workflow.\n" >&2
+dry_run=false
+
+# --- Arguments ---------------------------------------------------------------
+
+if [[ "${1:-}" == "--dry-run" ]]; then
+  dry_run=true
+  shift
+fi
+
+if [[ "$dry_run" != true && "${GITHUB_ACTIONS:-}" != true ]]; then
+  { #stderr
+    printf "Script is being run outside of a GitHub Actions workflow.\n"
+    printf "Use --dry-run flag to run script locally.\n"
+  } >&2
   exit 1
 fi
 
@@ -14,12 +27,12 @@ if [[ $# -eq 0 ]]; then
   exit 1
 fi
 
+# --- Version bump ------------------------------------------------------------
+
 commit_msg="$1"
 commit_prefix="${commit_msg%%:*}"
-commit_type="${commit_prefix//\(*\)/}"
-
+commit_type="${commit_prefix/(*)/}"
 bump=""
-exit_msg="Commit type '${commit_type}' does not require a version bump."
 
 case "$commit_type" in
 *!)
@@ -32,26 +45,25 @@ fix)
   bump="patch"
   ;;
 *)
-  printf "%s\n" "$exit_msg"
+  printf "Commit type '%s' does not require a version bump.\n" "$commit_type"
+  printf "Skipping release.\n"
   exit 0
   ;;
 esac
 
-user_name="github-actions[bot]"
-user_email="41898282+github-actions[bot]@users.noreply.github.com"
-git config --global user.name "$user_name"
-git config --global user.email "$user_email"
+# --- Current version ---------------------------------------------------------
 
-cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "0.0.0")"
+cur_tag="$(git describe --tags --abbrev=0 2>/dev/null || printf "v0.0.0")"
 cur_ver="${cur_tag#v}"
 
-major=0
-minor=0
-patch=0
-
-if [[ "$cur_tag" != "0.0.0" ]]; then
-  IFS='.' read -r major minor patch <<<"$cur_ver"
+if [[ ! "$cur_tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  printf "Current tag '%s' is invalid.\n" "$cur_tag" >&2
+  exit 1
 fi
+
+IFS='.' read -r major minor patch <<<"$cur_ver"
+
+# --- New version -------------------------------------------------------------
 
 case "$bump" in
 major)
@@ -71,5 +83,19 @@ esac
 new_ver="${major}.${minor}.${patch}"
 new_tag="v${new_ver}"
 
-git tag -a "$new_tag" -m "Release ${new_tag}"
-git push origin "$new_tag"
+# --- Payload -----------------------------------------------------------------
+
+if [[ "$dry_run" == true ]]; then
+  cat <<-EOF
+	Commit type:  ${commit_type}
+	Version bump: ${bump}
+	Current tag:  ${cur_tag}
+	Created tag:  ${new_tag}
+	EOF
+
+else
+  git config user.name "github-actions[bot]"
+  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  git tag -a "$new_tag" -m "Release ${new_tag}"
+  git push origin "$new_tag"
+fi

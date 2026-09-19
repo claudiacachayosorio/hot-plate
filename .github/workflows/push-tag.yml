@@ -1,16 +1,26 @@
 name: Push - Version Tag
-run-name: >-
-  "Push tag to ${{ github.event.repository.name }}/${{ github.ref_name }}"
+run-name: Push tag to ${{ github.ref_name }} (${{ github.event_name }})
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit message to use for dry run."
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   push-tag:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Checkout code
@@ -18,10 +28,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Update version
+      - name: Create and push version tag
         env:
-          SCRIPT: "./.github/scripts/push-tag.sh"
-          COMMIT: ${{ github.event.head_commit.message }}
+          COMMIT: ${{ inputs.commit || github.event.head_commit.message }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          chmod +x "$SCRIPT"
-          "$SCRIPT" "$COMMIT"
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            ./.github/scripts/push-tag.sh --dry-run "$COMMIT"
+          else
+            ./.github/scripts/push-tag.sh "$COMMIT"
+          fi
